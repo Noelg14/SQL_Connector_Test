@@ -96,7 +96,7 @@ public class sqlTest
         final JButton b=new JButton("Run Query");//creating instance of JButton  
         final JButton r1=new JButton("Reset");
         final JButton close=new JButton("close");
-        tf.setBounds(150,50,500,100); 
+        tf.setBounds(150,50,200,100); 
         b.setBounds(100,275,100,40);//x axis, y axis, width, height  
         r1.setBounds(225,275,75, 40);//x axis, y axis, width, height  
         close.setBounds(350,275,100,40);//x axis, y axis, width, height  
