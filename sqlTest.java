@@ -95,20 +95,24 @@ public class sqlTest
         final JTextField tf=new JTextField();  
         final JButton b=new JButton("Run Query");//creating instance of JButton  
         final JButton r1=new JButton("Reset");
-        final JButton close=new JButton("close");
-        tf.setBounds(150,50,200,100); 
-        b.setBounds(100,275,100,40);//x axis, y axis, width, height  
-        r1.setBounds(225,275,75, 40);//x axis, y axis, width, height  
-        close.setBounds(350,275,100,40);//x axis, y axis, width, height  
+        final JButton close=new JButton("Close");
+        tf.setBounds(150,50,200,40); 
+        b.setBounds(100,150,100,40);//x axis, y axis, width, height  
+        r1.setBounds(225,150,100,40);//x axis, y axis, width, height  
+        close.setBounds(350,150,100,40);//x axis, y axis, width, height  
 
         
-        JLabel t1;
+        JLabel t1;JLabel res;
         t1=new JLabel();
         t1.setText("Query: ");
         t1.setBounds(75,50,50,20);
+        res= new JLabel();
+        res.setText("");
+        res.setBounds(100,200,100,100);
 
 
         query.add(b);query.add(r1);query.add(tf);query.add(t1);query.add(close);
+        query.add(res);
         query.setSize(600,500);//400 width and 500 height  
         query.setLayout(null);//using no layout managers  
         query.setVisible(true);//making the frame visible  
@@ -123,7 +127,8 @@ public class sqlTest
                     Statement stmt=con.createStatement();  
                     ResultSet rs=stmt.executeQuery(u);  
                     while(rs.next())  
-                    System.out.println("ID: "+rs.getInt(1)+"  Name: "+rs.getString(2)+" Age: "+rs.getString(3));  
+                    res.setText(res.getText()+"<html>"+"ID: "+rs.getInt(1)+"\n Name: "+rs.getString(2)+" Age: "+rs.getString(3)+"</html>");
+                    //System.out.println("ID: "+rs.getInt(1)+"  Name: "+rs.getString(2)+" Age: "+rs.getString(3));  
                 }
                 catch(Exception s){
                     JOptionPane.showMessageDialog(new JFrame(),s,"Error",JOptionPane.ERROR_MESSAGE);
