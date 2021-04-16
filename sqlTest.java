@@ -1,9 +1,9 @@
 import javax.swing.*;
 import javax.swing.JOptionPane;
-import java.lang.*;
+//import java.lang.*;
 import java.awt.event.*;
-import java.awt.Color;
 import java.sql.*;
+//import com.mysql.jdbc.Driver;//C:\Program Files\Java\jre1.8.0_261\lib\ext\mysql-connector-java-8.0.21.jar
 
 public class sqlTest
 {
@@ -50,7 +50,7 @@ public class sqlTest
                     
                     try 
                     {
-                        Class.forName("com.mysql.jdbc.Driver");  
+                        Class.forName("com.mysql.cj.jdbc.Driver");  
 				        Connection con=DriverManager.getConnection( "jdbc:mysql://localhost:3306/schema",u,p);  
                         t3.setText("Success");
                         b.setText("Login");
@@ -62,6 +62,7 @@ public class sqlTest
                     
                     catch (Exception l) 
                     {
+                        b.setText("Login");
                         l.printStackTrace();
                         JOptionPane.showMessageDialog(new JFrame(),l,"Error",JOptionPane.ERROR_MESSAGE);
                     }
@@ -108,12 +109,12 @@ public class sqlTest
         t1.setBounds(75,50,50,20);
         res= new JLabel();
         res.setText("");
-        res.setBounds(100,200,100,100);
+        res.setBounds(100,200,300,100);
 
 
         query.add(b);query.add(r1);query.add(tf);query.add(t1);query.add(close);
         query.add(res);
-        query.setSize(600,500);//400 width and 500 height  
+        query.setSize(600,500);//600 width and 500 height  
         query.setLayout(null);//using no layout managers  
         query.setVisible(true);//making the frame visible  
         query.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
@@ -127,12 +128,13 @@ public class sqlTest
                     Statement stmt=con.createStatement();  
                     ResultSet rs=stmt.executeQuery(u);  
                     while(rs.next())  
-                    res.setText(res.getText()+"<html>"+"ID: "+rs.getInt(1)+"\n Name: "+rs.getString(2)+" Age: "+rs.getString(3)+"</html>");
+                    res.setText(res.getText()+"\nID: "+rs.getInt(1)+" Name: "+rs.getString(2)+" Age: "+rs.getString(3)+" ");
                     //System.out.println("ID: "+rs.getInt(1)+"  Name: "+rs.getString(2)+" Age: "+rs.getString(3));  
                 }
                 catch(Exception s){
                     JOptionPane.showMessageDialog(new JFrame(),s,"Error",JOptionPane.ERROR_MESSAGE);
                     s.printStackTrace();
+                    res.setText("");
                 }
             }
         }); 
@@ -143,6 +145,7 @@ public class sqlTest
             public void actionPerformed(ActionEvent r)
             {  
                 tf.setText("");
+                res.setText("");
             }
         }); 
 
@@ -176,9 +179,6 @@ public class sqlTest
             String error="Error!";
 			JOptionPane.showMessageDialog(new JFrame(),error,"OOPSIE WOOPSIE",JOptionPane.ERROR_MESSAGE);
         }
-
     }
-
-
 }
 
