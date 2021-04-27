@@ -10,7 +10,7 @@ import java.io.FileWriter;
 public class sqlTest
 {
 
-    public static void login() //return needs to be bool
+    public static void login() //creates login window and takes user name and pw, passes through JDBC
     {
         try {
             JFrame login=new JFrame("Login to DB");
@@ -43,7 +43,7 @@ public class sqlTest
 		    login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   
 
 
-            b.addActionListener(new ActionListener(){
+            b.addActionListener(new ActionListener(){ // waits for button click takes U&PW passes it into Connection
                 public void actionPerformed(ActionEvent e)
                 {  
                     String u=tf.getText();
@@ -74,7 +74,7 @@ public class sqlTest
 
             });
 
-            reset.addActionListener( new ActionListener()
+            reset.addActionListener( new ActionListener() // waits for reset button click clears text
             {  
                 public void actionPerformed(ActionEvent r)
                 {  
@@ -92,7 +92,7 @@ public class sqlTest
 
     }
 
-    public static void query(Connection con){
+    public static void query(Connection con){ // takes a connection type and creates a new window where a query can be entered
 
         JFrame query=new JFrame("DB");
         final JTextField tf=new JTextField();  
@@ -122,7 +122,7 @@ public class sqlTest
         query.setVisible(true);//making the frame visible  
         query.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
 
-        b.addActionListener( new ActionListener()
+        b.addActionListener( new ActionListener() // waits for button press. creates statement, runs query and prints result.
         {  
             public void actionPerformed(ActionEvent q)
             {  
@@ -131,23 +131,28 @@ public class sqlTest
                     String u=tf.getText();
                     Statement stmt=con.createStatement();  
                     ResultSet rs=stmt.executeQuery(u);  
+                    String res1="Result: ";
+
                     while(rs.next())  
-                    res.setText(res.getText()+"\nID: "+rs.getInt(1)+" Name: "+rs.getString(2)+" Age: "+rs.getString(3)+" ");
+                    res1=(res1+"\nID: "+rs.getInt(1)+" Name: "+rs.getString(2)+" Age: "+rs.getString(3)+"\n");
+
+                    res.setText(res1);
+
                     System.out.println(Date);
 
-                   File output = new File(Date+".txt");
+
+                   File output = new File(Date+".txt"); // creates file in format of YYYY-MM-DD
                     if(output.createNewFile())
                     {
                         System.out.println("File Created "+output.getName());
                     }
                     else
                     {
-                        System.out.println("Oops, File exisits.");  // gives directory error.
+                        System.out.println("Oops, File exisits."); 
                     } 
 
-                fillFile(output,rs); 
+                fillFile(output,res1);  // passes file and res string into fillFile
                      
-                    //System.out.println("ID: "+rs.getInt(1)+"  Name: "+rs.getString(2)+" Age: "+rs.getString(3));  
                 }
                 catch(Exception s){
                     JOptionPane.showMessageDialog(new JFrame(),s,"Error",JOptionPane.ERROR_MESSAGE);
@@ -177,26 +182,21 @@ public class sqlTest
                     System.exit(0);
                 } 
                 catch (Exception y) {
-                    //TODO: handle exception
                 }
 
             }
         }); 
     }
 
-    public static void fillFile(File in,ResultSet res){
+    public static void fillFile(File in,String res){ //takes the file we created and res 1 text string. writes it to the file.
         try{
             FileWriter writer = new FileWriter(in.getName());
             try {
-                String rs="Test: ";
-                while(res.next())
-                rs=(rs+"\nID: "+res.getInt(1)+" Name: "+res.getString(2)+" Age: "+res.getString(3)+"\n");
-               
-                writer.write(rs);
-                writer.close();
+                writer.write(res);
+                writer.close(); // closes file
             } 
-            catch (IOException | SQLException e) {
-                JOptionPane.showMessageDialog(new JFrame(),e,"Error",JOptionPane.ERROR_MESSAGE); //after end of result ??
+            catch (IOException e) {
+                JOptionPane.showMessageDialog(new JFrame(),e,"Error",JOptionPane.ERROR_MESSAGE); 
                 e.printStackTrace();
             }
     }
