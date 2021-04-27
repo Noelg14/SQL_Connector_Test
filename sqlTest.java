@@ -58,8 +58,7 @@ public class sqlTest
                         b.setText("Login");
 
                         query(con);
-                        login.dispose();
-                        
+                        login.dispose(); 
                     } 
                     
                     catch (Exception l) 
@@ -127,7 +126,7 @@ public class sqlTest
             public void actionPerformed(ActionEvent q)
             {  
                 try{
-                    String Date=(java.time.LocalDate.now()).toString(); 
+                    long Date=(System.currentTimeMillis());  //gets epoch time (prevents duplicate file names)
                     String u=tf.getText();
                     Statement stmt=con.createStatement();  
                     ResultSet rs=stmt.executeQuery(u);  
@@ -138,7 +137,7 @@ public class sqlTest
 
                     res.setText(res1);
 
-                    System.out.println(Date);
+                   // System.out.println(Date);
 
 
                    File output = new File(Date+".txt"); // creates file in format of YYYY-MM-DD
@@ -212,6 +211,7 @@ public class sqlTest
         try 
         {
             login();
+            //System.getProperty("user.name");
         } 
 
 
