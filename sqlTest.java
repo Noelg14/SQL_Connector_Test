@@ -3,7 +3,9 @@ import javax.swing.JOptionPane;
 //import java.lang.*;
 import java.awt.event.*;
 import java.sql.*;
-//import com.mysql.jdbc.Driver;//C:\Program Files\Java\jre1.8.0_261\lib\ext\mysql-connector-java-8.0.21.jar
+import java.io.File;
+import java.io.IOException;
+import java.io.FileWriter;
 
 public class sqlTest
 {
@@ -106,6 +108,7 @@ public class sqlTest
         JLabel t1;JLabel res;
         t1=new JLabel();
         t1.setText("Query: ");
+        tf.setText("Select * from person;");
         t1.setBounds(75,50,50,20);
         res= new JLabel();
         res.setText("");
@@ -124,11 +127,26 @@ public class sqlTest
             public void actionPerformed(ActionEvent q)
             {  
                 try{
+                    String Date=(java.time.LocalDate.now()).toString(); 
                     String u=tf.getText();
                     Statement stmt=con.createStatement();  
                     ResultSet rs=stmt.executeQuery(u);  
                     while(rs.next())  
                     res.setText(res.getText()+"\nID: "+rs.getInt(1)+" Name: "+rs.getString(2)+" Age: "+rs.getString(3)+" ");
+                    System.out.println(Date);
+
+                   File output = new File(Date+".txt");
+                    if(output.createNewFile())
+                    {
+                        System.out.println("File Created "+output.getName());
+                    }
+                    else
+                    {
+                        System.out.println("Oops, File exisits.");  // gives directory error.
+                    } 
+
+                fillFile(output,rs); 
+                     
                     //System.out.println("ID: "+rs.getInt(1)+"  Name: "+rs.getString(2)+" Age: "+rs.getString(3));  
                 }
                 catch(Exception s){
@@ -164,6 +182,29 @@ public class sqlTest
 
             }
         }); 
+    }
+
+    public static void fillFile(File in,ResultSet res){
+        try{
+            FileWriter writer = new FileWriter(in.getName());
+            try {
+                String rs="Test: ";
+                while(res.next())
+                rs=(rs+"\nID: "+res.getInt(1)+" Name: "+res.getString(2)+" Age: "+res.getString(3)+"\n");
+               
+                writer.write(rs);
+                writer.close();
+            } 
+            catch (IOException | SQLException e) {
+                JOptionPane.showMessageDialog(new JFrame(),e,"Error",JOptionPane.ERROR_MESSAGE); //after end of result ??
+                e.printStackTrace();
+            }
+    }
+    catch(IOException f){
+        JOptionPane.showMessageDialog(new JFrame(),f,"Error",JOptionPane.ERROR_MESSAGE);
+        f.printStackTrace();
+    }
+
     }
 
     public static void main(String args[])
