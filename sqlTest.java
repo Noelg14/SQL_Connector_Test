@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 //import java.lang.*;
 import java.awt.event.*;
@@ -13,33 +14,39 @@ public class sqlTest
     public static void login() //creates login window and takes user name and pw, passes through JDBC
     {
         try {
+
             JFrame login=new JFrame("Login to DB");
             final JTextField tf=new JTextField();  
             final JPasswordField tf1=new JPasswordField();   
             final JButton b=new JButton("Login");//creating instance of JButton  
 		    final JButton reset=new JButton("Reset");
-            tf.setBounds(150,50, 150,20); 
-		    tf1.setBounds(150,80, 150,20);  
-		    b.setBounds(100,175,100,40);//x axis, y axis, width, height  
-		    reset.setBounds(225,175,75, 40);//x axis, y axis, width, height  
+            final ImageIcon ic = new ImageIcon("sql2.png");
+            
+            login.setSize(400,500);//400 width and 500 height  
+		    login.setLayout(null);//using no layout managers  
+		    login.setVisible(true);//making the frame visible  
+            // login.pack(); minises tab 
+            tf.setBounds(150,150, 150,20); 
+		    tf1.setBounds(150,180, 150,20);  
+		    b.setBounds(75,250,100,40);//x axis, y axis, width, height  
+		    reset.setBounds(200,250,100, 40);//x axis, y axis, width, height  
     
             
-            JLabel t1,t2,t3;
+            JLabel t1,t2,t3,icon;
             t1=new JLabel();
             t2=new JLabel();
-            t3=new JLabel();         
+            t3=new JLabel();    
+            icon=new JLabel(ic);     
             t1.setText("Username: ");
             t2.setText("Password: ");
             t3.setText("");
 
-            t1.setBounds(50,50,150,20);
-            t2.setBounds(50,80,150,20);
+            t1.setBounds(50,150,150,20);
+            t2.setBounds(50,180,150,20);
             t3.setBounds(110,225,150,20);
+            icon.setBounds(125,0,150,150);
 
-            login.add(b);login.add(reset);login.add(tf);login.add(tf1);login.add(t1);login.add(t2);login.add(t3);
-            login.setSize(400,300);//400 width and 500 height  
-		    login.setLayout(null);//using no layout managers  
-		    login.setVisible(true);//making the frame visible  
+            login.add(b);login.add(reset);login.add(tf);login.add(tf1);login.add(t1);login.add(t2);login.add(t3);login.add(icon);
 		    login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   
 
 
@@ -49,27 +56,34 @@ public class sqlTest
                     String u=tf.getText();
 					String p=tf1.getText();
 					b.setText("Checking...");  
-                    
-                    try 
+                    if(u.isEmpty() || p.isEmpty())
                     {
-                        Class.forName("com.mysql.cj.jdbc.Driver");  
-				        Connection con=DriverManager.getConnection( "jdbc:mysql://localhost:3306/schema",u,p);  
-                        t3.setText("Success");
+                        JOptionPane.showMessageDialog(new JFrame(),"Please enter a Username & Password","Error",JOptionPane.ERROR_MESSAGE);
                         b.setText("Login");
-
-                        query(con);
-                        login.dispose(); 
-                    } 
-                    
-                    catch (Exception l) 
-                    {
-                        b.setText("Login");
-                        l.printStackTrace();
-                        JOptionPane.showMessageDialog(new JFrame(),l,"Error",JOptionPane.ERROR_MESSAGE);
                     }
+                    else{
+                    
+                        try 
+                        {
+                            Class.forName("com.mysql.cj.jdbc.Driver");  
+                            Connection con=DriverManager.getConnection( "jdbc:mysql://localhost:3306/schema",u,p);  
+                            t3.setText("Success");
+                            b.setText("Login");
+
+                            query(con);
+                            login.dispose(); 
+                        } 
+                        
+                        catch (Exception l) 
+                        {
+                            b.setText("Login");
+                            l.printStackTrace();
+                            JOptionPane.showMessageDialog(new JFrame(),l,"Error",JOptionPane.ERROR_MESSAGE);
+                        }
 
 
-                }
+                } // end of else
+            }
 
             });
 
@@ -126,7 +140,6 @@ public class sqlTest
             public void actionPerformed(ActionEvent q)
             {  
                 try{
-                    long Date=(System.currentTimeMillis());  //gets epoch time (prevents duplicate file names)
                     String u=tf.getText();
                     String type[]=u.split(" ",2); 
                     //gets first string "Select","Insert","Update" as these all need different types. I can code this in, by spliting the string, but I'll see how I feel
@@ -144,18 +157,7 @@ public class sqlTest
                         res1=(res1+"\nID: "+rs.getInt(1)+" Name: "+rs.getString(2)+" Age: "+rs.getString(3)+"\n");
 
                     res.setText(res1);
-
-                    File output = new File(Date+".txt"); // creates file in format of YYYY-MM-DD
-                    if(output.createNewFile())
-                    {
-                        System.out.println("File Created "+output.getName());
-                    }
-                    else
-                    {
-                        System.out.println("Oops, File exisits.");
-                    } 
-
-                    fillFile(output,res1);  // passes file and res string into fillFile
+                    fillFile(res1);  // passes res string into fillFile
 
                 }
                 catch(Exception s){
@@ -192,17 +194,30 @@ public class sqlTest
         }); 
     }
 
-    public static void fillFile(File in,String res){ //takes the file we created and res 1 text string. writes it to the file.
+    public static void fillFile(String res){ //creates file and adds res 1 text string. writes it to the file.
         try{
-            FileWriter writer = new FileWriter(in.getName());
-            try {
-                writer.write(res);
-                writer.close(); // closes file
-            } 
-            catch (IOException e) {
-                JOptionPane.showMessageDialog(new JFrame(),e,"Error",JOptionPane.ERROR_MESSAGE); 
-                e.printStackTrace();
+
+            long Date=(System.currentTimeMillis());  //gets epoch time (prevents duplicate file names)
+            File in = new File(Date+".txt"); // creates file in format of YYYY-MM-DD
+
+            if(in.createNewFile())
+            {
+                System.out.println("File Created "+in.getName());
+                FileWriter writer = new FileWriter(in.getName());
+
+                try {
+                    writer.write(res);
+                    writer.close(); // closes file
+                } 
+                catch (IOException e) {
+                    JOptionPane.showMessageDialog(new JFrame(),e,"Error",JOptionPane.ERROR_MESSAGE); 
+                    e.printStackTrace();
+                }
             }
+            else
+            {
+                System.out.println("Oops, File exsits.");
+            } 
     }
     catch(IOException f){
         JOptionPane.showMessageDialog(new JFrame(),f,"Error",JOptionPane.ERROR_MESSAGE);
@@ -218,7 +233,6 @@ public class sqlTest
             login();
             //System.getProperty("user.name");
         } 
-
 
         catch (Exception e)
         {
