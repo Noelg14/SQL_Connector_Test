@@ -10,15 +10,16 @@ import java.io.FileWriter;
 
 public class sqlTest
 {
-    final static String version= "0.1";
+    final static String version= "0.1.1"; //version no.
+    //final static String user=System.getProperty("user.name").toLowerCase(); seems to cause problems
     
     public static void login() //creates login window and takes user name and pw, passes through JDBC
     {
         try {
 
             JFrame login=new JFrame("Login to DB");
-            final JTextField tf=new JTextField();  
-            final JPasswordField tf1=new JPasswordField();   
+            final JTextField tf=new JTextField();   //Username field
+            final JPasswordField tf1=new JPasswordField();   //password field 
             final JButton b=new JButton("Login");//creating instance of JButton  
 		    final JButton reset=new JButton("Reset");
             final ImageIcon ic = new ImageIcon("sql2.png");
@@ -44,6 +45,7 @@ public class sqlTest
             t2.setText("Password: ");
             t3.setText("");
             v.setText("Version : "+version);
+            //tf.setText(user); //takes account name and makes it lower case | Seems to have an issue when generating
 
             t1.setBounds(50,150,150,20);
             t2.setBounds(50,180,150,20);
@@ -113,7 +115,7 @@ public class sqlTest
     public static void query(Connection con)
     { // takes a connection of Type Connection and creates a new window where a query can be entered
 
-        JFrame query=new JFrame("DB");
+        JFrame query=new JFrame("Welcome!");
         final JTextField tf=new JTextField();  
         final JButton b=new JButton("Run Query");//creating instance of JButton  
         final JButton r1=new JButton("Reset");
