@@ -10,7 +10,8 @@ import java.io.FileWriter;
 
 public class sqlTest
 {
-
+    final static String version= "0.1";
+    
     public static void login() //creates login window and takes user name and pw, passes through JDBC
     {
         try {
@@ -30,23 +31,27 @@ public class sqlTest
 		    tf1.setBounds(150,180, 150,20);  
 		    b.setBounds(75,250,100,40);//x axis, y axis, width, height  
 		    reset.setBounds(200,250,100, 40);//x axis, y axis, width, height  
+
     
             
-            JLabel t1,t2,t3,icon;
+            JLabel t1,t2,t3,icon,v;
             t1=new JLabel();
             t2=new JLabel();
             t3=new JLabel();    
-            icon=new JLabel(ic);     
+            icon=new JLabel(ic);  
+            v =  new JLabel();   
             t1.setText("Username: ");
             t2.setText("Password: ");
             t3.setText("");
+            v.setText("Version : "+version);
 
             t1.setBounds(50,150,150,20);
             t2.setBounds(50,180,150,20);
             t3.setBounds(110,225,150,20);
             icon.setBounds(125,0,150,150);
+            v.setBounds(140,400,150,20);
 
-            login.add(b);login.add(reset);login.add(tf);login.add(tf1);login.add(t1);login.add(t2);login.add(t3);login.add(icon);
+            login.add(b);login.add(reset);login.add(tf);login.add(tf1);login.add(t1);login.add(t2);login.add(t3);login.add(icon);login.add(v);
 		    login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   
 
 
@@ -105,7 +110,8 @@ public class sqlTest
 
     }
 
-    public static void query(Connection con){ // takes a connection of Type Connection and creates a new window where a query can be entered
+    public static void query(Connection con)
+    { // takes a connection of Type Connection and creates a new window where a query can be entered
 
         JFrame query=new JFrame("DB");
         final JTextField tf=new JTextField();  
@@ -118,17 +124,22 @@ public class sqlTest
         close.setBounds(350,150,100,40);//x axis, y axis, width, height  
 
         
-        JLabel t1;JLabel res;
+        JLabel t1;JLabel res,v;
         t1=new JLabel();
+        res= new JLabel();
+        v=new JLabel();
+
         t1.setText("Query: ");
         tf.setText("Select * from person;");
-        t1.setBounds(75,50,50,20);
-        res= new JLabel();
         res.setText("");
-        res.setBounds(100,200,300,100);
+        v.setText("Version : "+version);
+
+        t1.setBounds(75,50,50,20);
+        res.setBounds(200,200,300,100);
+        v.setBounds(175,400,150,20);
 
 
-        query.add(b);query.add(r1);query.add(tf);query.add(t1);query.add(close);
+        query.add(b);query.add(r1);query.add(tf);query.add(t1);query.add(close);query.add(v);
         query.add(res);
         query.setSize(600,500);//600 width and 500 height  
         query.setLayout(null);//using no layout managers  
@@ -139,28 +150,31 @@ public class sqlTest
         {  
             public void actionPerformed(ActionEvent q)
             {  
-                try{
+                try
+                {
                     String u=tf.getText();
                     String type[]=u.split(" ",2); 
                     //gets first string "Select","Insert","Update" as these all need different types. I can code this in, by spliting the string, but I'll see how I feel
-                   
                     System.out.println(type[0]);
-
-                   
 
                     Statement stmt=con.createStatement();  
                     ResultSet rs=stmt.executeQuery(u); 
-                                           
+                    res.setText("Data Exported");
+                                            
                     String res1="Result: ";
 
                     while(rs.next())  
-                        res1=(res1+"\nID: "+rs.getInt(1)+" Name: "+rs.getString(2)+" Age: "+rs.getString(3)+"\n");
+                           res1=(res1+"\nID: "+rs.getInt(1)+" Name: "+rs.getString(2)+" Age: "+rs.getString(3)+"\n");
 
-                    res.setText(res1);
-                    fillFile(res1);  // passes res string into fillFile
-
+                    fillFile(res1); 
+                        
+                    // passes res string into fillFile
+                    //java.util.concurrent.TimeUnit.SECONDS.sleep(15);
+                    //res.setText("");          
                 }
-                catch(Exception s){
+
+                catch(Exception s)
+                {
                     JOptionPane.showMessageDialog(new JFrame(),s,"Error",JOptionPane.ERROR_MESSAGE);
                     s.printStackTrace();
                     res.setText("");
@@ -194,7 +208,8 @@ public class sqlTest
         }); 
     }
 
-    public static void fillFile(String res){ //creates file and adds res 1 text string. writes it to the file.
+    public static void fillFile(String res)
+    { //creates file and adds res 1 text string. writes it to the file.
         try{
 
             long Date=(System.currentTimeMillis());  //gets epoch time (prevents duplicate file names)
@@ -230,6 +245,7 @@ public class sqlTest
     {
         try 
         {
+
             login();
             //System.getProperty("user.name");
         } 
