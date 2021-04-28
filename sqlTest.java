@@ -10,7 +10,7 @@ import java.io.FileWriter;
 
 public class sqlTest
 {
-    final static String version= "0.1.1"; //version no.
+    final static String version= "0.1.2"; //version no.
     //final static String user=System.getProperty("user.name").toLowerCase(); seems to cause problems
     
     public static void login() //creates login window and takes user name and pw, passes through JDBC
@@ -19,6 +19,8 @@ public class sqlTest
 
             JFrame login=new JFrame("Login to DB");
             final JTextField tf=new JTextField();   //Username field
+            final JTextField host=new JTextField();   //Username field
+            final JTextField port=new JTextField();   //Username field
             final JPasswordField tf1=new JPasswordField();   //password field 
             final JButton b=new JButton("Login");//creating instance of JButton  
 		    final JButton reset=new JButton("Reset");
@@ -28,52 +30,69 @@ public class sqlTest
 		    login.setLayout(null);//using no layout managers  
 		    login.setVisible(true);//making the frame visible  
             // login.pack(); minises tab 
-            tf.setBounds(150,150, 150,20); 
-		    tf1.setBounds(150,180, 150,20);  
+            tf.setBounds(150,180, 150,20); 
+		    tf1.setBounds(150,210, 150,20);  
+            host.setBounds(150,150,90,20);
+            port.setBounds(250,150,50,20);
 		    b.setBounds(75,250,100,40);//x axis, y axis, width, height  
 		    reset.setBounds(200,250,100, 40);//x axis, y axis, width, height  
 
+            //port.setText("3306"); //causes rendering issues??
+
     
             
-            JLabel t1,t2,t3,icon,v;
+            JLabel t1,t2,t3,icon,v,t4;
             t1=new JLabel();
             t2=new JLabel();
             t3=new JLabel();    
             icon=new JLabel(ic);  
-            v =  new JLabel();   
+            v = new JLabel();   
+            t4= new JLabel();
             t1.setText("Username: ");
             t2.setText("Password: ");
             t3.setText("");
             v.setText("Version : "+version);
+            t4.setText("Host + Port:");
             //tf.setText(user); //takes account name and makes it lower case | Seems to have an issue when generating
 
-            t1.setBounds(50,150,150,20);
-            t2.setBounds(50,180,150,20);
+            t1.setBounds(50,180,150,20);
+            t2.setBounds(50,210,150,20);
             t3.setBounds(110,225,150,20);
             icon.setBounds(125,0,150,150);
             v.setBounds(140,400,150,20);
+            t4.setBounds(50,150,150,20);
+
 
             login.add(b);login.add(reset);login.add(tf);login.add(tf1);login.add(t1);login.add(t2);login.add(t3);login.add(icon);login.add(v);
+            login.add(host);login.add(port);login.add(t4);
 		    login.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);   
 
 
             b.addActionListener(new ActionListener(){ // waits for button click takes U&PW passes it into Connection
                 public void actionPerformed(ActionEvent e)
                 {  
+                    String h = ("jdbc:mysql://"+host.getText()+":"+port.getText()+"/schema");
                     String u=tf.getText();
 					String p=tf1.getText();
 					b.setText("Checking...");  
+                   
+                    System.out.println(h);
+
                     if(u.isEmpty() || p.isEmpty())
                     {
                         JOptionPane.showMessageDialog(new JFrame(),"Please enter a Username & Password","Error",JOptionPane.ERROR_MESSAGE);
                         b.setText("Login");
                     }
+                   /* else if(host.getText().isEmpty()|| port.getText().isEmpty()){
+                        JOptionPane.showMessageDialog(new JFrame(),"Please enter a Hostname & Port","Error",JOptionPane.ERROR_MESSAGE);
+                        b.setText("Login");
+                    } */ //commented out for now, not yet needed 
                     else{
                     
                         try 
                         {
                             Class.forName("com.mysql.cj.jdbc.Driver");  
-                            Connection con=DriverManager.getConnection( "jdbc:mysql://localhost:3306/schema",u,p);  
+                            Connection con=DriverManager.getConnection(h,u,p);  
                             t3.setText("Success");
                             b.setText("Login");
 
