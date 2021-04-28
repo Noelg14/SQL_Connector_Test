@@ -91,7 +91,7 @@ public class sqlTest
 
     }
 
-    public static void query(Connection con){ // takes a connection type and creates a new window where a query can be entered
+    public static void query(Connection con){ // takes a connection of Type Connection and creates a new window where a query can be entered
 
         JFrame query=new JFrame("DB");
         final JTextField tf=new JTextField();  
@@ -128,30 +128,35 @@ public class sqlTest
                 try{
                     long Date=(System.currentTimeMillis());  //gets epoch time (prevents duplicate file names)
                     String u=tf.getText();
+                    String type[]=u.split(" ",2); 
+                    //gets first string "Select","Insert","Update" as these all need different types. I can code this in, by spliting the string, but I'll see how I feel
+                   
+                    System.out.println(type[0]);
+
+                   
+
                     Statement stmt=con.createStatement();  
-                    ResultSet rs=stmt.executeQuery(u);  
+                    ResultSet rs=stmt.executeQuery(u); 
+                                           
                     String res1="Result: ";
 
                     while(rs.next())  
-                    res1=(res1+"\nID: "+rs.getInt(1)+" Name: "+rs.getString(2)+" Age: "+rs.getString(3)+"\n");
+                        res1=(res1+"\nID: "+rs.getInt(1)+" Name: "+rs.getString(2)+" Age: "+rs.getString(3)+"\n");
 
                     res.setText(res1);
 
-                   // System.out.println(Date);
-
-
-                   File output = new File(Date+".txt"); // creates file in format of YYYY-MM-DD
+                    File output = new File(Date+".txt"); // creates file in format of YYYY-MM-DD
                     if(output.createNewFile())
                     {
                         System.out.println("File Created "+output.getName());
                     }
                     else
                     {
-                        System.out.println("Oops, File exisits."); 
+                        System.out.println("Oops, File exisits.");
                     } 
 
-                fillFile(output,res1);  // passes file and res string into fillFile
-                     
+                    fillFile(output,res1);  // passes file and res string into fillFile
+
                 }
                 catch(Exception s){
                     JOptionPane.showMessageDialog(new JFrame(),s,"Error",JOptionPane.ERROR_MESSAGE);
