@@ -7,10 +7,12 @@ import java.sql.*;
 import java.io.File;
 import java.io.IOException;
 import java.io.FileWriter;
+//import java.util.Properties;
+
 
 public class sqlTest
 {
-    final static String version= "0.1.2"; //version no.
+    final static String version= "0.1.3"; //version no.
     //final static String user=System.getProperty("user.name").toLowerCase(); seems to cause problems
     
     public static void login() //creates login window and takes user name and pw, passes through JDBC
@@ -36,6 +38,7 @@ public class sqlTest
             port.setBounds(250,150,50,20);
 		    b.setBounds(75,250,100,40);//x axis, y axis, width, height  
 		    reset.setBounds(200,250,100, 40);//x axis, y axis, width, height  
+            port.setEnabled(false); host.setEnabled(false); //disables these fields for now
 
             //port.setText("3306"); //causes rendering issues??
 
@@ -76,7 +79,7 @@ public class sqlTest
 					String p=tf1.getText();
 					b.setText("Checking...");  
                    
-                    System.out.println(h);
+                   // System.out.println(h);
 
                     if(u.isEmpty() || p.isEmpty())
                     {
@@ -87,6 +90,7 @@ public class sqlTest
                         JOptionPane.showMessageDialog(new JFrame(),"Please enter a Hostname & Port","Error",JOptionPane.ERROR_MESSAGE);
                         b.setText("Login");
                     } */ //commented out for now, not yet needed 
+
                     else{
                     
                         try 
@@ -139,7 +143,7 @@ public class sqlTest
         final JButton b=new JButton("Run Query");//creating instance of JButton  
         final JButton r1=new JButton("Reset");
         final JButton close=new JButton("Close");
-        tf.setBounds(150,50,200,40); 
+        tf.setBounds(150,50,250,50);
         b.setBounds(100,150,100,40);//x axis, y axis, width, height  
         r1.setBounds(225,150,100,40);//x axis, y axis, width, height  
         close.setBounds(350,150,100,40);//x axis, y axis, width, height  
@@ -157,7 +161,7 @@ public class sqlTest
 
         t1.setBounds(75,50,50,20);
         res.setBounds(200,200,300,100);
-        v.setBounds(175,400,150,20);
+        v.setBounds(200,400,150,20);
 
 
         query.add(b);query.add(r1);query.add(tf);query.add(t1);query.add(close);query.add(v);
@@ -176,7 +180,7 @@ public class sqlTest
                     String u=tf.getText();
                     String type[]=u.split(" ",2); 
                     //gets first string "Select","Insert","Update" as these all need different types. I can code this in, by spliting the string, but I'll see how I feel
-                    System.out.println(type[0]);
+                    //System.out.println(type[0]);  //prints 'select' 
 
                     Statement stmt=con.createStatement();  
                     ResultSet rs=stmt.executeQuery(u); 
@@ -188,7 +192,6 @@ public class sqlTest
                            res1=(res1+"\nID: "+rs.getInt(1)+" Name: "+rs.getString(2)+" Age: "+rs.getString(3)+"\n");
 
                     fillFile(res1); 
-                        
                     // passes res string into fillFile
                     //java.util.concurrent.TimeUnit.SECONDS.sleep(15);
                     //res.setText("");          
@@ -235,7 +238,7 @@ public class sqlTest
 
             long Date=(System.currentTimeMillis());  //gets epoch time (prevents duplicate file names)
             File in = new File(Date+".txt"); // creates file in format of YYYY-MM-DD
-
+            
             if(in.createNewFile())
             {
                 System.out.println("File Created "+in.getName());
@@ -268,6 +271,7 @@ public class sqlTest
         {
 
             login();
+            System.getProperties().list(System.out);
             //System.getProperty("user.name");
         } 
 
