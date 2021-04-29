@@ -12,8 +12,8 @@ import java.io.FileWriter;
 
 public class sqlTest
 {
-    final static String version= "0.1.3"; //version no.
-    //final static String user=System.getProperty("user.name").toLowerCase(); seems to cause problems
+    final static String version= "0.1.4"; //version no.
+    //final static String user=System.getProperty("user.name").toLowerCase(); //seems to cause problems
     
     public static void login() //creates login window and takes user name and pw, passes through JDBC
     {
@@ -38,12 +38,12 @@ public class sqlTest
             port.setBounds(250,150,50,20);
 		    b.setBounds(75,250,100,40);//x axis, y axis, width, height  
 		    reset.setBounds(200,250,100, 40);//x axis, y axis, width, height  
+
             port.setEnabled(false); host.setEnabled(false); //disables these fields for now
 
             //port.setText("3306"); //causes rendering issues??
+            //tf.setText(user); //takes account name and makes it lower case | Seems to have an issue when generating
 
-    
-            
             JLabel t1,t2,t3,icon,v,t4;
             t1=new JLabel();
             t2=new JLabel();
@@ -56,12 +56,12 @@ public class sqlTest
             t3.setText("");
             v.setText("Version : "+version);
             t4.setText("Host + Port:");
-            //tf.setText(user); //takes account name and makes it lower case | Seems to have an issue when generating
+           
 
             t1.setBounds(50,180,150,20);
             t2.setBounds(50,210,150,20);
             t3.setBounds(110,225,150,20);
-            icon.setBounds(125,0,150,150);
+            icon.setBounds(110,0,150,150);
             v.setBounds(140,400,150,20);
             t4.setBounds(50,150,150,20);
 
@@ -75,8 +75,8 @@ public class sqlTest
                 public void actionPerformed(ActionEvent e)
                 {  
                     String h = ("jdbc:mysql://"+host.getText()+":"+port.getText()+"/schema");
-                    String u=tf.getText();
-					String p=tf1.getText();
+                    String u = tf.getText();
+					String p = tf1.getText();
 					b.setText("Checking...");  
                    
                    // System.out.println(h);
@@ -142,7 +142,7 @@ public class sqlTest
         final JTextField tf=new JTextField();  
         final JButton b=new JButton("Run Query");//creating instance of JButton  
         final JButton r1=new JButton("Reset");
-        final JButton close=new JButton("Close");
+        final JButton close=new JButton("Log Out");
         tf.setBounds(150,50,250,50);
         b.setBounds(100,150,100,40);//x axis, y axis, width, height  
         r1.setBounds(225,150,100,40);//x axis, y axis, width, height  
@@ -223,7 +223,8 @@ public class sqlTest
                 try {
                     con.close();
                     query.dispose();
-                    System.exit(0);
+                    JOptionPane.showMessageDialog(new JFrame(),"Logged Out Successfully","Goodbye",JOptionPane.INFORMATION_MESSAGE);
+                    login();
                 } 
                 catch (Exception y) {
                 }
@@ -269,7 +270,6 @@ public class sqlTest
     {
         try 
         {
-
             login();
             System.getProperties().list(System.out);
             //System.getProperty("user.name");
