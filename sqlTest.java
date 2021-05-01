@@ -8,11 +8,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.FileWriter;
 //import java.util.Properties;
-
+//End of Imports
 
 public class sqlTest
 {
-    final static String version= "0.1.5"; //version no.
+    final static String version= "0.1.6"; //version no.
     //final static String user=System.getProperty("user.name").toLowerCase(); //seems to cause problems
     
     public static void login() //creates login window and takes user name and pw, passes through JDBC
@@ -107,8 +107,8 @@ public class sqlTest
                         catch (Exception l) 
                         {
                             b.setText("Login");
-                            l.printStackTrace();
                             JOptionPane.showMessageDialog(new JFrame(),l,"Error",JOptionPane.ERROR_MESSAGE);
+                            fillFile(l.toString(),"error");
                         }
 
 
@@ -169,7 +169,24 @@ public class sqlTest
         query.setSize(600,500);//600 width and 500 height  
         query.setLayout(null);//using no layout managers  
         query.setVisible(true);//making the frame visible  
-        query.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);  
+        query.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         
+        if(getTables(con).equals(null)){ //get table names.. Will be used down the line.
+            JOptionPane.showMessageDialog(new JFrame(),"GetTables was null","FUCK",JOptionPane.INFORMATION_MESSAGE);
+        }
+        else{
+            try
+            {
+                String tables="";
+                ResultSet rs=getTables(con);
+                while(rs.next())  
+                    tables=(tables+rs.getString(1));
+                fillFile(tables,"Tables");
+            }
+            catch(SQLException e){
+
+            }
+        }
 
         b.addActionListener( new ActionListener() // waits for button press. creates statement, runs query and prints result.
         {  
@@ -191,7 +208,7 @@ public class sqlTest
                     while(rs.next())  
                            res1=(res1+"\nID: "+rs.getInt(1)+" Name: "+rs.getString(2)+" Age: "+rs.getString(3)+"\n");
 
-                    fillFile(res1); 
+                    fillFile(res1,"results"); 
                     //passes res string into fillFile
                     //java.util.concurrent.TimeUnit.SECONDS.sleep(15);
                     //res.setText("");          
@@ -233,12 +250,12 @@ public class sqlTest
         }); 
     }
 
-    public static void fillFile(String res)
-    { //creates file and adds res 1 text string. writes it to the file.
+    public static String fillFile(String res,String name)//creates file and adds res text string. writes it to the file. takes name and appends to file name
+    { 
         try{
 
             long Date=(System.currentTimeMillis());  //gets epoch time (prevents duplicate file names)
-            File in = new File(Date+".txt"); // creates file in format of YYYY-MM-DD
+            File in = new File(name+"_"+Date+".txt"); // creates file in format of YYYY-MM-DD
             
             if(in.createNewFile())
             {
@@ -248,6 +265,7 @@ public class sqlTest
                 try {
                     writer.write(res);
                     writer.close(); // closes file
+                    return in.getName();
                 } 
                 catch (IOException e) {
                     JOptionPane.showMessageDialog(new JFrame(),e,"Error",JOptionPane.ERROR_MESSAGE); 
@@ -258,12 +276,12 @@ public class sqlTest
             {
                 System.out.println("Oops, File exsits.");
             } 
-    }
-    catch(IOException f){
-        JOptionPane.showMessageDialog(new JFrame(),f,"Error",JOptionPane.ERROR_MESSAGE);
-        f.printStackTrace();
-    }
-
+        }
+        catch(IOException f){
+            JOptionPane.showMessageDialog(new JFrame(),f,"Error",JOptionPane.ERROR_MESSAGE);
+            f.printStackTrace();
+        }
+        return null;
     }
 
     public static void queryTest(){
@@ -277,24 +295,35 @@ public class sqlTest
         }
     }
 
+    public static ResultSet getTables(Connection con){ //gets name of tables, will be used down the line
+        try{
+            Statement stmt=con.createStatement();  
+            ResultSet rs=stmt.executeQuery("Show Tables;"); 
+            return rs;
+        }
+        catch(SQLException s){
+            fillFile(s.toString(),"error");
+            return null;
+        }
+        
+    }
+
     public static void main(String args[])
     {
-        //System.out.print("Arg 0 = "+args[0]);
-            try 
-            {
-                //queryTest();
-                login();
-                System.getProperties().list(System.out);
+        try 
+        {
+            //queryTest();
+            login();
+            System.getProperties().list(System.out);
                     
-                //System.getProperty("user.name");
-            } 
+            //System.getProperty("user.name");
+        } 
 
-            catch (Exception e)
-            {
-                String error="Error!";
-                JOptionPane.showMessageDialog(new JFrame(),error,"OOPSIE WOOPSIE",JOptionPane.ERROR_MESSAGE);
-            }
-        
+        catch (Exception e)
+        {
+            String error="Error!";
+            JOptionPane.showMessageDialog(new JFrame(),error,"OOPSIE WOOPSIE",JOptionPane.ERROR_MESSAGE);
+        }
     }
 }
 
