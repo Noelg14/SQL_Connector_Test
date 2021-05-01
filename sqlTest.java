@@ -12,7 +12,7 @@ import java.io.FileWriter;
 
 public class sqlTest
 {
-    final static String version= "0.1.6"; //version no.
+    final static String version= "0.1.7"; //version no.
     //final static String user=System.getProperty("user.name").toLowerCase(); //seems to cause problems
     
     public static void login() //creates login window and takes user name and pw, passes through JDBC
@@ -74,7 +74,7 @@ public class sqlTest
             b.addActionListener(new ActionListener(){ // waits for button click takes U&PW passes it into Connection
                 public void actionPerformed(ActionEvent e)
                 {  
-                    String h = ("jdbc:mysql://"+host.getText()+":"+port.getText()+"/schema");
+                    String h = ("jdbc:mysql://"+host.getText()+":"+port.getText()+"/world");
                     String u = tf.getText();
 					String p = tf1.getText();
 					b.setText("Checking...");  
@@ -155,7 +155,7 @@ public class sqlTest
         v=new JLabel();
 
         t1.setText("Query: ");
-        tf.setText("Select * from person;");
+        tf.setText("Select * from country;");
         res.setText("");
         v.setText("Version : "+version);
 
@@ -171,7 +171,8 @@ public class sqlTest
         query.setVisible(true);//making the frame visible  
         query.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
          
-        if(getTables(con).equals(null)){ //get table names.. Will be used down the line.
+        if(getTables(con).equals(null))
+        { //get table names.. Will be used down the line.
             JOptionPane.showMessageDialog(new JFrame(),"GetTables was null","FUCK",JOptionPane.INFORMATION_MESSAGE);
         }
         else{
@@ -179,14 +180,16 @@ public class sqlTest
             {
                 String tables="";
                 ResultSet rs=getTables(con);
-                while(rs.next())  
-                    tables=(tables+rs.getString(1));
-                fillFile(tables,"Tables");
+                while(rs.next()){
+                    tables=(tables +rs.getString(1)+ "\n"); // tables would be better as an Array, I will do this later
+                }
+              //  fillFile(tables,"Tables");
             }
             catch(SQLException e){
 
             }
         }
+
 
         b.addActionListener( new ActionListener() // waits for button press. creates statement, runs query and prints result.
         {  
@@ -195,9 +198,9 @@ public class sqlTest
                 try
                 {
                     String u=tf.getText();
-                    String type[]=u.split(" ",2); 
+                    String type[]=u.split(" ",4); 
                     //gets first string "Select","Insert","Update" as these all need different types. I can code this in, by spliting the string, but I'll see how I feel
-                    //System.out.println(type[0]);  //prints 'select' 
+                    //System.out.println(type[3]);   //prints country; 
 
                     Statement stmt=con.createStatement();  
                     ResultSet rs=stmt.executeQuery(u); 
@@ -206,9 +209,9 @@ public class sqlTest
                     String res1="Result: ";
 
                     while(rs.next())  
-                           res1=(res1+"\nID: "+rs.getInt(1)+" Name: "+rs.getString(2)+" Age: "+rs.getString(3)+"\n");
+                           res1=(res1+"\nCode: "+rs.getString(1)+" Name: "+rs.getString(2)+" Continent: "+rs.getString(3)+" Region "+rs.getString(4)+"\n");
 
-                    fillFile(res1,"results"); 
+                    fillFile(res1,"Results"); 
                     //passes res string into fillFile
                     //java.util.concurrent.TimeUnit.SECONDS.sleep(15);
                     //res.setText("");          
