@@ -12,7 +12,7 @@ import java.io.FileWriter;
 
 public class sqlTest
 {
-    final static String version= "0.1.4"; //version no.
+    final static String version= "0.1.5"; //version no.
     //final static String user=System.getProperty("user.name").toLowerCase(); //seems to cause problems
     
     public static void login() //creates login window and takes user name and pw, passes through JDBC
@@ -143,10 +143,10 @@ public class sqlTest
         final JButton b=new JButton("Run Query");//creating instance of JButton  
         final JButton r1=new JButton("Reset");
         final JButton close=new JButton("Log Out");
-        tf.setBounds(150,50,250,50);
-        b.setBounds(100,150,100,40);//x axis, y axis, width, height  
-        r1.setBounds(225,150,100,40);//x axis, y axis, width, height  
-        close.setBounds(350,150,100,40);//x axis, y axis, width, height  
+        tf.setBounds(150,150,250,50);
+        b.setBounds(100,250,100,40);//x axis, y axis, width, height  
+        r1.setBounds(225,250,100,40);//x axis, y axis, width, height  
+        close.setBounds(350,250,100,40);//x axis, y axis, width, height  
 
         
         JLabel t1;JLabel res,v;
@@ -159,9 +159,9 @@ public class sqlTest
         res.setText("");
         v.setText("Version : "+version);
 
-        t1.setBounds(75,50,50,20);
-        res.setBounds(200,200,300,100);
-        v.setBounds(200,400,150,20);
+        t1.setBounds(75,165,50,20);
+        res.setBounds(225,300,300,100);
+        v.setBounds(225,400,150,20);
 
 
         query.add(b);query.add(r1);query.add(tf);query.add(t1);query.add(close);query.add(v);
@@ -192,7 +192,7 @@ public class sqlTest
                            res1=(res1+"\nID: "+rs.getInt(1)+" Name: "+rs.getString(2)+" Age: "+rs.getString(3)+"\n");
 
                     fillFile(res1); 
-                    // passes res string into fillFile
+                    //passes res string into fillFile
                     //java.util.concurrent.TimeUnit.SECONDS.sleep(15);
                     //res.setText("");          
                 }
@@ -266,20 +266,35 @@ public class sqlTest
 
     }
 
+    public static void queryTest(){
+        try{
+            //Class.forName("com.mysql.cj.jdbc.Driver");   //class not found???
+            Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/schema","noel","noel");  
+            query(con);
+        }
+        catch(Exception t){
+            JOptionPane.showMessageDialog(new JFrame(),t,"Error",JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
     public static void main(String args[])
     {
-        try 
-        {
-            login();
-            System.getProperties().list(System.out);
-            //System.getProperty("user.name");
-        } 
+        //System.out.print("Arg 0 = "+args[0]);
+            try 
+            {
+                //queryTest();
+                login();
+                System.getProperties().list(System.out);
+                    
+                //System.getProperty("user.name");
+            } 
 
-        catch (Exception e)
-        {
-            String error="Error!";
-			JOptionPane.showMessageDialog(new JFrame(),error,"OOPSIE WOOPSIE",JOptionPane.ERROR_MESSAGE);
-        }
+            catch (Exception e)
+            {
+                String error="Error!";
+                JOptionPane.showMessageDialog(new JFrame(),error,"OOPSIE WOOPSIE",JOptionPane.ERROR_MESSAGE);
+            }
+        
     }
 }
 
