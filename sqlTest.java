@@ -12,7 +12,7 @@ import java.io.FileWriter;
 
 public class sqlTest
 {
-    final static String version= "0.1.7"; //version no.
+    final static String version= "0.1.9"; //version no.
     //final static String user=System.getProperty("user.name").toLowerCase(); //seems to cause problems
     
     public static void login() //creates login window and takes user name and pw, passes through JDBC
@@ -112,8 +112,8 @@ public class sqlTest
                         }
 
 
-                } // end of else
-            }
+                    } // end of else
+                }
 
             });
 
@@ -186,7 +186,7 @@ public class sqlTest
               //  fillFile(tables,"Tables");
             }
             catch(SQLException e){
-
+                //TODO Handle Exception
             }
         }
 
@@ -198,20 +198,32 @@ public class sqlTest
                 try
                 {
                     String u=tf.getText();
-                    String type[]=u.split(" ",4); 
+                    //String type[]=u.split(" ",4); 
                     //gets first string "Select","Insert","Update" as these all need different types. I can code this in, by spliting the string, but I'll see how I feel
                     //System.out.println(type[3]);   //prints country; 
 
                     Statement stmt=con.createStatement();  
                     ResultSet rs=stmt.executeQuery(u); 
-                    res.setText("Data Exported");
-                                            
-                    String res1="Result: ";
+                    ResultSetMetaData rsmd = rs.getMetaData();
+                    int count =rsmd.getColumnCount();  //BRUH, I can make this Dynamic, add a for loop and add 
+                    
+                        //The column count starts from 1
+                        for (int i = 1; i <= count; i++ ) {
+                                //String label="";
+                                String name = rsmd.getColumnName(i); //tried to make array, it wasnt happy
+                                System.out.print(name+" \r\n");
+                                //label=label+"\r\n "+name;
+                        }
 
+
+
+                    String res1="Result: ";
+                    //System.out.println(rs.getRow()); //columnLabel is name so ID/Name etc //columnIndex is number.
                     while(rs.next())  
-                           res1=(res1+"\nCode: "+rs.getString(1)+" Name: "+rs.getString(2)+" Continent: "+rs.getString(3)+" Region "+rs.getString(4)+"\n");
+                           res1=(res1+"\nCODE:"+rs.getString(1)+" Name:"+rs.getString(2)+" Continent:"+rs.getString(3)+" Region:"+rs.getString(4)+"\n");
 
                     fillFile(res1,"Results"); 
+                    res.setText("Data Exported");
                     //passes res string into fillFile
                     //java.util.concurrent.TimeUnit.SECONDS.sleep(15);
                     //res.setText("");          
@@ -290,7 +302,7 @@ public class sqlTest
     public static void queryTest(){
         try{
             //Class.forName("com.mysql.cj.jdbc.Driver");   //class not found???
-            Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/schema","noel","noel");  
+            Connection con=DriverManager.getConnection("jdbc:mysql://localhost:3306/world","noel","noel");  
             query(con);
         }
         catch(Exception t){
@@ -317,7 +329,7 @@ public class sqlTest
         {
             //queryTest();
             login();
-            System.getProperties().list(System.out);
+            //System.getProperties().list(System.out);
                     
             //System.getProperty("user.name");
         } 
