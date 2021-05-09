@@ -13,7 +13,7 @@ import java.io.FileWriter;
 public class sqlTest
 {
     final static String version= "0.1.9"; //version no.
-    //final static String user=System.getProperty("user.name").toLowerCase(); //seems to cause problems
+    //static String user=System.getProperty("user.name").toLowerCase(); //seems to cause problems
     
     public static void login() //creates login window and takes user name and pw, passes through JDBC
     {
@@ -74,7 +74,7 @@ public class sqlTest
             b.addActionListener(new ActionListener(){ // waits for button click takes U&PW passes it into Connection
                 public void actionPerformed(ActionEvent e)
                 {  
-                    String h = ("jdbc:mysql://"+host.getText()+":"+port.getText()+"/world");
+                    String h ="jdbc:mysql://localhost:3306/world" ;//("jdbc:mysql://"+host.getText()+":"+port.getText()+"/world");
                     String u = tf.getText();
 					String p = tf1.getText();
 					b.setText("Checking...");  
@@ -171,7 +171,7 @@ public class sqlTest
         query.setVisible(true);//making the frame visible  
         query.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
          
-        if(getTables(con).equals(null))
+     /*   if(getTables(con).equals(null))
         { //get table names.. Will be used down the line.
             JOptionPane.showMessageDialog(new JFrame(),"GetTables was null","FUCK",JOptionPane.INFORMATION_MESSAGE);
         }
@@ -181,15 +181,13 @@ public class sqlTest
                 String tables="";
                 ResultSet rs=getTables(con);
                 while(rs.next()){
-                    tables=(tables +rs.getString(1)+ "\n"); // tables would be better as an Array, I will do this later
+                    tables=(tables +rs.getString(1)+ "\n"); // tables would be better as an Array
                 }
               //  fillFile(tables,"Tables");
             }
             catch(SQLException e){
-                //TODO Handle Exception
             }
-        }
-
+        }*/
 
         b.addActionListener( new ActionListener() // waits for button press. creates statement, runs query and prints result.
         {  
@@ -205,7 +203,7 @@ public class sqlTest
                     Statement stmt=con.createStatement();  
                     ResultSet rs=stmt.executeQuery(u); 
                     ResultSetMetaData rsmd = rs.getMetaData();
-                    int count =rsmd.getColumnCount();  //BRUH, I can make this Dynamic, add a for loop and add 
+                    int count =rsmd.getColumnCount();  //I can make this Dynamic, add a for loop and add 
                     
                         //The column count starts from 1
                         for (int i = 1; i <= count; i++ ) {
@@ -214,8 +212,6 @@ public class sqlTest
                                 System.out.print(name+" \r\n");
                                 //label=label+"\r\n "+name;
                         }
-
-
 
                     String res1="Result: ";
                     //System.out.println(rs.getRow()); //columnLabel is name so ID/Name etc //columnIndex is number.
@@ -330,8 +326,6 @@ public class sqlTest
             //queryTest();
             login();
             //System.getProperties().list(System.out);
-                    
-            //System.getProperty("user.name");
         } 
 
         catch (Exception e)
@@ -341,4 +335,3 @@ public class sqlTest
         }
     }
 }
-
